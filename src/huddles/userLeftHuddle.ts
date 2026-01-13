@@ -21,7 +21,7 @@ export default async (args: {
     mirrorMessage({
         message: `${args.slackId} left the huddle`,
         user: args.slackId,
-        channel: Config.CAFE_CHANNEL,
+        channel: Config.MAIN_CHANNEL,
         type: 'huddle_left'
     });    
 

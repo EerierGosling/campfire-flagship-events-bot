@@ -6,8 +6,8 @@ import { addScrap } from "./addScrap";
 import { Config } from "../config";
 
 app.event('message', async ({ event, client }) => {
-    if (event.channel !== Config.CAFE_CHANNEL) { return; }
-    
+    if (event.channel !== Config.SCRAPS_CHANNEL) { return; }
+
     switch (event.subtype) {
         case 'file_share': 
         case undefined:

@@ -36,7 +36,7 @@ const pauseJob = async () => {
 
             // Send a message to the user
             await whisper({
-                channel: Config.CAFE_CHANNEL,
+                channel: Config.MAIN_CHANNEL,
                 user: session.slackId,
                 text: t('pause_timeout', {
                     slackId: session.slackId

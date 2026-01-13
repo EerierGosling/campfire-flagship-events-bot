@@ -23,7 +23,7 @@ export default async (args: {
     mirrorMessage({
         message: `${args.slackId} joined the huddle`,
         user: args.slackId,
-        channel: Config.CAFE_CHANNEL,
+        channel: Config.MAIN_CHANNEL,
         type: 'huddle_join'
     });
 
@@ -58,7 +58,7 @@ export default async (args: {
         });
 
         whisper({
-            channel: Config.CAFE_CHANNEL,
+            channel: Config.MAIN_CHANNEL,
             user: args.slackId,
             text: 'welcome back! i\'ve unpaused your session'
         });
@@ -72,7 +72,7 @@ export default async (args: {
 
 
         whisper({
-            channel: Config.CAFE_CHANNEL,
+            channel: Config.MAIN_CHANNEL,
             user: args.slackId,
             text: t('huddle_join')
         });

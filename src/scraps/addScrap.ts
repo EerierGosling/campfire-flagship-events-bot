@@ -25,7 +25,7 @@ type Scrap = {
 }
 
 export async function addScrap(args: {
-    session: Session, 
+    session: Session,
     scrap: Scrap
 }) {
     const now = new Date();
@@ -93,7 +93,7 @@ export async function addScrap(args: {
     switch (args.session.state) {
         case 'WAITING_FOR_INITAL_SCRAP':  
             await app.client.chat.postMessage({
-                channel: Config.CAFE_CHANNEL,
+                channel: Config.SCRAPS_CHANNEL,
                 text: t('logged_goal'),
                 thread_ts: args.scrap.ts
             });
@@ -101,7 +101,7 @@ export async function addScrap(args: {
             break;
         case 'SESSION_PENDING':
             await app.client.chat.postMessage({
-                channel: Config.CAFE_CHANNEL,
+                channel: Config.SCRAPS_CHANNEL,
                 text: t('logged_scrap', {
                     cups: msToCups(updatedSession.elapsed)
                 }),
@@ -131,7 +131,7 @@ export async function addScrap(args: {
             console.log(`session completed. total cups lifetime: ${msToCups(totalCups)} cups`);
  
             await app.client.chat.postMessage({
-                channel: Config.CAFE_CHANNEL,
+                channel: Config.SCRAPS_CHANNEL,
                 text: t('finish', {
                     cups: msToCups(updatedSession.elapsed),
                     totalCups: msToCups(totalCups)
@@ -167,7 +167,7 @@ export async function addScrap(args: {
 
     // generate a url for the thread
     const messageUrl = await app.client.chat.getPermalink({
-        channel: Config.CAFE_CHANNEL,
+        channel: Config.SCRAPS_CHANNEL,
         message_ts: args.scrap.ts,
         token: process.env.SLACK_USER_TOKEN // put this on my tab :wink: 
     });

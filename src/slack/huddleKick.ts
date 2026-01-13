@@ -8,7 +8,7 @@ export default async function huddleKick(slackId: string) {
     try {
         await app.client.conversations.kick({
             token: process.env.SLACK_USER_TOKEN,
-            channel: Config.CAFE_CHANNEL,
+            channel: Config.MAIN_CHANNEL,
             user: slackId
         });
 
@@ -16,7 +16,7 @@ export default async function huddleKick(slackId: string) {
     
         await app.client.conversations.invite({
             token: process.env.SLACK_USER_TOKEN,
-            channel: Config.CAFE_CHANNEL,
+            channel: Config.MAIN_CHANNEL,
             users: slackId
         });
     } catch (e) {

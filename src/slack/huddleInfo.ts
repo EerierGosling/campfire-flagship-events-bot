@@ -11,7 +11,7 @@ for (const key in headerData) {
 
 const body = JSON.stringify({
     "token": process.env.SLACK_CLIENT_TOKEN,
-    "channel_ids": [Config.CAFE_CHANNEL],
+    "channel_ids": ["C08C6BZCE11"],
 });
 
 export type Huddle = {
@@ -31,7 +31,7 @@ export type Huddle = {
 }
 
 export default function huddleInfo(): Promise<{ huddles: Huddle[] } | undefined> {
-    return fetch("https://edgeapi.slack.com/cache/T0266FRGM/huddles/info?_x_app_name=client&fp=f5&_x_num_retries=0", {
+    return fetch("https://edgeapi.slack.com/cache/E09V59WQY1E/huddles/info?_x_app_name=client&fp=f5&_x_num_retries=0", {
         method: "POST",
         headers,
         body,

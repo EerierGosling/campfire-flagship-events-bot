@@ -63,7 +63,7 @@ export async function whisper(args: {
     })
 
     await app.client.chat.postEphemeral({
-        channel: args.channel || Config.CAFE_CHANNEL,
+        channel: args.channel || Config.MAIN_CHANNEL,
         user: args.user,
         text: args.text,
         blocks

@@ -24,7 +24,7 @@ export default async (args: {
 
     mirrorMessage({
         message: `Starting session for <@${args.slackId}>`,
-        channel: Config.CAFE_CHANNEL,
+        channel: Config.MAIN_CHANNEL,
         user: args.slackId,
         type: 'session_update'
     })

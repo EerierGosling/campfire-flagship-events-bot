@@ -1,9 +1,9 @@
 import { minutes } from "./util/math"
 
 export const Config = {
-    CAFE_CHANNEL: 'C02A74Z7G7L',
-    LOGS_CHANNEL: 'C08BTE4991P',
-    BULLETIN_CHANNEL: 'C08CD0F2QBV',
+    MAIN_CHANNEL: 'C08C6BZCE11',
+    SCRAPS_CHANNEL: 'C0A82QMCQBZ',
+    LOGS_CHANNEL: 'C0A8CU5PY9K'
 }
 
 export const Intervals = {
