@@ -9,11 +9,11 @@ import { t } from "../util/transcript";
 
 // pretty much treat this as the user joining the huddle
 
-app.command('/hack', async ({ ack, payload }) => {
+app.command('/start-eventing', async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({
-        message: 'user ran `/hack`',
+        message: 'user ran `/start-eventing`',
         user: payload.user_id,
         channel: payload.channel_id,
         type: 'slash-command'
@@ -22,7 +22,7 @@ app.command('/hack', async ({ ack, payload }) => {
     if (hasDeadlinePassed()) {
         await whisper({
             user: payload.user_id,
-            text: `cafe has ended!`
+            text: `Campfire Flagship is over!`
         });
 
         return;
@@ -35,7 +35,7 @@ app.command('/hack', async ({ ack, payload }) => {
     if (!activeEvent) {
         await whisper({
             user: payload.user_id,
-            text: `there's no active event right now! ask an admin to start one.`
+            text: `There's no active event right now! Ask an admin to start one if you think there should be.`
         });
 
         return;
@@ -57,21 +57,20 @@ app.command('/hack', async ({ ack, payload }) => {
         if (!huddle) {
             await whisper({
                 user: payload.user_id,
-                text: `seems like no one is in a huddle rn. you should start one!`
+                text: `Seems like there's no huddle right now.`
             });
 
             return;
         } else if (!huddle.active_members.includes(payload.user_id)) {
             await whisper({
                 user: payload.user_id,
-                text: `seems like you're not in the huddle! you should join!`
+                text: `Seems like you're not in the huddle - you should join!`
             });
 
             return;
         } else {
             await whisper({
                 user: payload.user_id,
-                header: "yooooo! ready to hack? here's what you gotta do...",
                 text: t('hack.initial_scrap')
             })
 
@@ -87,7 +86,7 @@ app.command('/hack', async ({ ack, payload }) => {
     else {
         await whisper({
             user: session.slackId,
-            text: `seems like it's not the time to hack! (or you're already hacking, in which case, keep hacking!!!!)`
+            text: 'You already have a pending session!'
         })
     }
 });

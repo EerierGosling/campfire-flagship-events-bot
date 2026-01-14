@@ -9,13 +9,9 @@ import './events/appMention';
 import './huddles/huddles';
 import './huddles/poll';
 import './huddles/afk';
-import './commands/cups';
 
-import './commands/board';
-import './commands/cups';
-import './commands/help';
-import './commands/yap';
-import './commands/hack'
+import './commands/check-progress';
+import './commands/start-eventing'
 import './commands/start-event'
 import './commands/end-event'
 

@@ -7,11 +7,11 @@ import { genProgressBar } from "../util/transcript";
 import { Commands, Intervals } from "../config";
 import { users } from "../util/airtable";
 
-app.command(Commands.CUPS, async ({ ack, payload }) => {
+app.command("/check-progress", async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({
-        message: 'user ran `/cups`',
+        message: 'user ran `/check-progress`',
         user: payload.user_id,
         channel: payload.channel_id,
         type: 'slash-command'
