@@ -10,7 +10,7 @@ Heidi is written in Typescript. To quickly run it and get started, install `bun`
 
 You'll need an environment file to properly set up heidi and test her for yourself. You can DM me, @manitej on the Hack Club Slack, and I'd be happy to provide an env file for you to test with (and also help you set up and learn about heidi!)
 
-## user flow
+## User Flow
 
 Heidi uses huddle join events provided by slack and polling to keep track of a user's huddle status. Since slack doesn't provide a convinent way to see if a user is in a huddle or not, there's possibilities where heidi might bug and not detect a user leaving a huddle (polling should have covered edge cases, but it seems like some people are facing issues/bugs still happening).
 

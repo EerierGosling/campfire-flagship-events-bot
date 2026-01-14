@@ -29,7 +29,7 @@ export default async (args: {
 
     if (!session) { return; }
 
-    if (session.state === 'WAITING_FOR_INITAL_SCRAP') {
+    if (session.state === 'WAITING_FOR_INITIAL_SCRAP') {
         // delete if there's no scrap
         await cancel(session, "left without posting goal");
         

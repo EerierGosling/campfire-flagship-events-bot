@@ -28,6 +28,19 @@ app.command('/hack', async ({ ack, payload }) => {
         return;
     }
 
+    const activeEvent = await prisma.event.findFirst({
+        where: { active: true }
+    });
+
+    if (!activeEvent) {
+        await whisper({
+            user: payload.user_id,
+            text: `there's no active event right now! ask an admin to start one.`
+        });
+
+        return;
+    }
+
     const session = await prisma.session.findFirst({
         where: {
             slackId: payload.user_id,
@@ -64,7 +77,8 @@ app.command('/hack', async ({ ack, payload }) => {
 
             await start({
                 slackId: payload.user_id,
-                callId: huddle.call_id
+                callId: huddle.call_id,
+                event: activeEvent.name
             });
 
             return;

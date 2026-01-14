@@ -16,6 +16,8 @@ import './commands/cups';
 import './commands/help';
 import './commands/yap';
 import './commands/hack'
+import './commands/start-event'
+import './commands/end-event'
 
 import './scraps/message';
 

@@ -28,7 +28,7 @@ app.event('message', async ({ event, client }) => {
             //     return;
             // }
 
-            if (event.subtype === undefined && session.state !== 'WAITING_FOR_INITAL_SCRAP') { return; }
+            if (event.subtype === undefined && session.state !== 'WAITING_FOR_INITIAL_SCRAP') { return; }
 
             addScrap({
                 session,

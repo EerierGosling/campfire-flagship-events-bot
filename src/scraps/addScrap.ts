@@ -32,7 +32,7 @@ export async function addScrap(args: {
 
     let scrapState: $Enums.ScrapState = 'IN_PROGRESS';
     switch (args.session.state) {
-        case 'WAITING_FOR_INITAL_SCRAP':
+        case 'WAITING_FOR_INITIAL_SCRAP':
             scrapState = 'INITIAL';
             break;
         case 'WAITING_FOR_FINAL_SCRAP':
@@ -42,7 +42,7 @@ export async function addScrap(args: {
 
     let nextSessionState: $Enums.State = 'SESSION_PENDING';
     switch (args.session.state) {
-        case 'WAITING_FOR_INITAL_SCRAP':
+        case 'WAITING_FOR_INITIAL_SCRAP':
             nextSessionState = 'SESSION_PENDING';
             break;
         case 'SESSION_PENDING':
@@ -91,7 +91,7 @@ export async function addScrap(args: {
     });
 
     switch (args.session.state) {
-        case 'WAITING_FOR_INITAL_SCRAP':  
+        case 'WAITING_FOR_INITIAL_SCRAP':  
             await app.client.chat.postMessage({
                 channel: Config.SCRAPS_CHANNEL,
                 text: t('logged_goal'),

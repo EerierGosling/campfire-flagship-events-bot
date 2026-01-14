@@ -29,6 +29,14 @@ model Session {
   scraps        Scrap[]
   user          User      @relation(fields: [slackId], references: [slackId])
   lastReminded  DateTime? @default(now())
+  event         String?
+}
+
+model Event {
+  id        String   @id @default(uuid())
+  name      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
 }
 
 model Scrap {
@@ -45,11 +53,10 @@ model Scrap {
   createdAt DateTime 
   ts        String
   text      String
-  files     String[] // list of file IDs  
+  files     String[]
 }
 
 enum State {
-  WAITING_FOR_INITAL_SCRAP
   SESSION_PENDING
   WAITING_FOR_FINAL_SCRAP
   COMPLETED

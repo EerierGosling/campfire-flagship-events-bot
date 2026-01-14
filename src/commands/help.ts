@@ -32,13 +32,6 @@ app.command(Commands.HELP, async ({ ack, payload }) => {
                 text: t('help.no_session.text'),
                 image: t('flow_img')
             })
-        } else if (session.state === 'WAITING_FOR_INITAL_SCRAP') {
-            await whisper({
-                user: payload.user_id,
-                header: t('help.initial_scrap.header'),
-                text: t('help.initial_scrap.text'),
-                image: t('flow_img')
-            })
         } else if (session.state === 'SESSION_PENDING') {
             await whisper({
                 user: payload.user_id,

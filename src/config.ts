@@ -28,3 +28,10 @@ export const Commands = process.env.DEV ? {
     BOARD: '/board',
     HELP: '/cafe-help',
 }
+
+export const Admins = [
+    'U056J6JURFF', // sofia
+    'U05D1G4H754', // evan
+    'U07FCRNHS1J', // augie
+    'U080YU735H8', // violet
+]

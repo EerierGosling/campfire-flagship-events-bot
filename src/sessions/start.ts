@@ -10,7 +10,8 @@ import { v4 as uuidv4 } from 'uuid';
 
 export default async (args: {
     slackId: string,
-    callId: string
+    callId: string,
+    event: string
 }) => {
     const now = new Date();
 
@@ -36,9 +37,10 @@ export default async (args: {
         "User": [user.airtableRecId],
         "Call ID": args.callId,
         "Joined At": now.toISOString(),
-        "State": "WAITING_FOR_INITAL_SCRAP"
+        "State": "SESSION_PENDING",
+        "Event Name": args.event
     });
-
+    
     return await prisma.session.create({
         data: {
             id: uuid,
@@ -46,8 +48,9 @@ export default async (args: {
             callId: args.callId,
             joinedAt: now,
             lastUpdate: now,
-            state: 'WAITING_FOR_INITAL_SCRAP',
-            airtableRecId: airtableSession.id
+            state: 'SESSION_PENDING',
+            airtableRecId: airtableSession.id,
+            event: args.event
         }
     });
 }

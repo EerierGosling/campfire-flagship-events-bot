@@ -28,11 +28,18 @@ export default async (args: {
     });
 
     if (hasDeadlinePassed()) {
-        // await whisper({
-        //     user: args.slackId,
-        //     text: `cafe has ended!`
-        // });
+        return;
+    }
 
+    const activeEvent = await prisma.event.findFirst({
+        where: { active: true }
+    });
+
+    if (!activeEvent) {
+        await whisper({
+            user: args.slackId,
+            text: `there's no active event right now! ask an admin to start one.`
+        });
         return;
     }
 
@@ -65,7 +72,8 @@ export default async (args: {
     } else if (sessionState === 'NOT_IN_SESSION') {
         await start({
             slackId: args.slackId,
-            callId: args.callId
+            callId: args.callId,
+            event: activeEvent.name
         })
     
         console.log(`bot asked what they're working on`)

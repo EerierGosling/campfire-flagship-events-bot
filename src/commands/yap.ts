@@ -69,18 +69,6 @@ app.command('/yap', async ({ ack, payload }) => {
         console.log(`user wants to yap, requested to ship early`)
         console.log(`waiting for final scrap`)
     }
-    else if (session.state === 'WAITING_FOR_INITAL_SCRAP') {
-        // cancel the session if there's no scrap
-        await cancel(session, "did not post a goal");
-
-        await whisper({
-            user: session.slackId,
-            text: t('yap.no_scrap')
-        })
-
-        console.log(`user wants to yap`)
-        console.log(`session cancelled`)
-    }
     else {
         await whisper({
             user: session.slackId,
