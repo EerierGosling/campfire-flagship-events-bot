@@ -38,7 +38,17 @@ const pauseJob = async () => {
             const ONE_HOUR_MS = 60 * 60 * 1000;
             const hadEnoughTime = currentElapsed >= ONE_HOUR_MS;
 
-            if (hadEnoughTime) {
+            const existingScraps = await prisma.scrap.count({
+                where: { sessionId: session.id }
+            });
+
+            if (existingScraps > 0 && hadEnoughTime) {
+                await prisma.session.update({
+                    where: { id: session.id },
+                    data: { state: 'COMPLETED', paused: false }
+                });
+                console.log(`session ${session.id} auto-completed - had scrap posted during call`);
+            } else if (hadEnoughTime) {
                 await whisper({
                     channel: Config.MAIN_CHANNEL,
                     user: session.slackId,
@@ -46,6 +56,7 @@ const pauseJob = async () => {
                         slackId: session.slackId
                     })
                 });
+                await cancel(session, "did not post final ship");
             } else {
                 const minutesInCall = Math.floor(currentElapsed / 60000);
                 await whisper({
@@ -53,9 +64,8 @@ const pauseJob = async () => {
                     user: session.slackId,
                     text: `<@${session.slackId}> it's been 10 minutes since you left and you haven't rejoined the call! I'm clearing your time for this session. you were only in the call for ${minutesInCall} minutes - you need to stay for at least 60 minutes for it to count towards a boost!`
                 });
+                await cancel(session, "less than 60 minutes");
             }
-
-            await cancel(session, hadEnoughTime ? "did not post final ship" : "less than 60 minutes");
 
             i++;
         }
