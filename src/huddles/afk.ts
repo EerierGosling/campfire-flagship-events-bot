@@ -34,19 +34,28 @@ const pauseJob = async () => {
         if (session.leftAt.getTime() + (Intervals.PAUSE_TIMEOUT) < now.getTime()) {
             console.log(`session ${session.id} has gone afk after leaving the call`);
 
-            // Send a message to the user
-            await whisper({
-                channel: Config.MAIN_CHANNEL,
-                user: session.slackId,
-                text: t('pause_timeout', {
-                    slackId: session.slackId
-                })
-            });
+            const currentElapsed = session.elapsed + (session.leftAt.getTime() - session.lastUpdate.getTime());
+            const ONE_HOUR_MS = 60 * 60 * 1000;
+            const hadEnoughTime = currentElapsed >= ONE_HOUR_MS;
 
-            // End the session
-            // todo: do I consider it cancelled or completed? how do i treat it - does it count or not?
-            // for now, just complete it and move on
-            await cancel(session, "did not post final ship");
+            if (hadEnoughTime) {
+                await whisper({
+                    channel: Config.MAIN_CHANNEL,
+                    user: session.slackId,
+                    text: t('pause_timeout', {
+                        slackId: session.slackId
+                    })
+                });
+            } else {
+                const minutesInCall = Math.floor(currentElapsed / 60000);
+                await whisper({
+                    channel: Config.MAIN_CHANNEL,
+                    user: session.slackId,
+                    text: `<@${session.slackId}> it's been 10 minutes since you left and you haven't rejoined the call! I'm clearing your time for this session. you were only in the call for ${minutesInCall} minutes - you need to stay for at least 60 minutes for it to count towards a boost!`
+                });
+            }
+
+            await cancel(session, hadEnoughTime ? "did not post final ship" : "less than 60 minutes");
 
             i++;
         }
