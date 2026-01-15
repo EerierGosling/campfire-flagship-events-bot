@@ -38,7 +38,8 @@ export default async (args: {
         "Call ID": args.callId,
         "Joined At": now.toISOString(),
         "State": "SESSION_PENDING",
-        "Event Name": args.event
+        "Event Name": args.event,
+        "Approval Status": "Pending"
     });
     
     return await prisma.session.create({

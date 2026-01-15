@@ -26,21 +26,16 @@ app.command("/flagship-event-help", async ({ ack, payload }) => {
         const sessionIds = (airtableUser.fields['Sessions'] || []) as string[];
         
         let approvedCount = 0;
+        let pendingCount = 0;
         if (sessionIds.length > 0) {
             const userSessions = await Promise.all(
                 sessionIds.map(id => sessions.find(id))
             );
-            approvedCount = userSessions.filter(s => s.fields['Approved']).length;
+            approvedCount = userSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
+            pendingCount = userSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
         }
 
-        const completedSessionCount = await prisma.session.count({
-            where: {
-                slackId: payload.user_id,
-                state: 'COMPLETED'
-            }
-        });
-
-        const progressImageUrl = getProgressImageUrl(approvedCount, completedSessionCount);
+        const progressImageUrl = getProgressImageUrl(approvedCount, pendingCount);
 
         if (progressImageUrl) {
             blocks.push({
@@ -51,16 +46,16 @@ app.command("/flagship-event-help", async ({ ack, payload }) => {
         }
 
         const boostThresholds = [1, 2, 4, 6, 9];
-        const nextBoostThreshold = boostThresholds.find(t => t > completedSessionCount);
-        const callsUntilNextBoost = nextBoostThreshold ? nextBoostThreshold - completedSessionCount : 0;
+        const nextBoostThreshold = boostThresholds.find(t => t > approvedCount);
+        const callsUntilNextBoost = nextBoostThreshold ? nextBoostThreshold - approvedCount : 0;
 
-        let progressText = `you have *${approvedCount}* approved calls and *${completedSessionCount}* completed calls.`;
+        let progressText = `you have *${approvedCount}* approved calls and *${pendingCount}* pending calls.`;
         if (nextBoostThreshold) {
             progressText += ` you need *${callsUntilNextBoost}* more call${callsUntilNextBoost === 1 ? '' : 's'} to unlock your next boost!`;
         } else {
             progressText += ` you've unlocked all available boosts!`;
         }
-        progressText += `\n\n:red-star: = approved  :grey-star: = completed (pending approval)`;
+        progressText += `\n\n:red-star: = approved  :grey-star: = pending approval`;
 
         blocks.push({
             type: 'section',

@@ -54,21 +54,23 @@ app.command("/check-progress", async ({ ack, payload }) => {
     const sessionIds = (airtableUser.fields['Sessions'] || []) as string[];
     
     let approvedCount = 0;
+    let pendingCount = 0;
     if (sessionIds.length > 0) {
         const userSessions = await Promise.all(
             sessionIds.map(id => sessions.find(id))
         );
-        approvedCount = userSessions.filter(s => s.fields['Approved']).length;
+        approvedCount = userSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
+        pendingCount = userSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
         
         console.log('User sessions from Airtable:', userSessions.map(s => ({
             id: s.id,
-            Approved: s.fields['Approved']
+            'Approval Status': s.fields['Approval Status']
         })));
     }
     
-    console.log(`User ${payload.user_id}: ${sessionIds.length} sessions, ${approvedCount} approved, ${completedSessionCount} completed`);
+    console.log(`User ${payload.user_id}: ${sessionIds.length} sessions, ${approvedCount} approved, ${pendingCount} pending`);
 
-    const progressImageUrl = getProgressImageUrl(approvedCount, completedSessionCount);
+    const progressImageUrl = getProgressImageUrl(approvedCount, pendingCount);
 
     let blocks: AnyBlock[] = [];
     
@@ -80,11 +82,12 @@ app.command("/check-progress", async ({ ack, payload }) => {
         });
     }
     
+    const totalValidCalls = approvedCount + pendingCount;
     const boostThresholds = [1, 2, 4, 6, 9];
-    const nextBoostThreshold = boostThresholds.find(t => t > completedSessionCount);
-    const callsUntilNextBoost = nextBoostThreshold ? nextBoostThreshold - completedSessionCount : 0;
+    const nextBoostThreshold = boostThresholds.find(t => t > approvedCount);
+    const callsUntilNextBoost = nextBoostThreshold ? nextBoostThreshold - approvedCount : 0;
     
-    let progressText = `you have *${approvedCount}* approved calls and *${completedSessionCount}* completed calls.`;
+    let progressText = `you have *${approvedCount}* approved calls and *${pendingCount}* pending calls.`;
     
     if (nextBoostThreshold) {
         progressText += `\n\nyou need *${callsUntilNextBoost}* more call${callsUntilNextBoost === 1 ? '' : 's'} to unlock your next boost!`;
@@ -92,7 +95,7 @@ app.command("/check-progress", async ({ ack, payload }) => {
         progressText += `\n\nyou've unlocked all available boosts!`;
     }
     
-    progressText += `\n\n:red-star: = approved  :grey-star: = completed (pending approval)`;
+    progressText += `\n\n:red-star: = approved  :grey-star: = pending approval`;
 
     blocks.push({
         type: 'section',
