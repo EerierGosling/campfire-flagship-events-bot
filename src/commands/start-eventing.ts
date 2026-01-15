@@ -22,7 +22,7 @@ app.command('/start-eventing', async ({ ack, payload }) => {
     if (hasDeadlinePassed()) {
         await whisper({
             user: payload.user_id,
-            text: `Campfire Flagship is over!`
+            text: `campfire flagship is over!`
         });
 
         return;
@@ -35,7 +35,7 @@ app.command('/start-eventing', async ({ ack, payload }) => {
     if (!activeEvent) {
         await whisper({
             user: payload.user_id,
-            text: `There's no active event right now! Ask an admin to start one if you think there should be.`
+            text: `there's no active event right now! ask an admin to start one if you think there should be.`
         });
 
         return;
@@ -57,21 +57,21 @@ app.command('/start-eventing', async ({ ack, payload }) => {
         if (!huddle) {
             await whisper({
                 user: payload.user_id,
-                text: `Seems like there's no huddle right now.`
+                text: `seems like there's no huddle right now.`
             });
 
             return;
         } else if (!huddle.active_members.includes(payload.user_id)) {
             await whisper({
                 user: payload.user_id,
-                text: `Seems like you're not in the huddle - you should join!`
+                text: `seems like you're not in the huddle - you should join!`
             });
 
             return;
         } else {
             await whisper({
                 user: payload.user_id,
-                text: t('hack.initial_scrap')
+                text: t('start_eventing.initial_scrap')
             })
 
             await start({
@@ -86,7 +86,7 @@ app.command('/start-eventing', async ({ ack, payload }) => {
     else {
         await whisper({
             user: session.slackId,
-            text: 'You already have a pending session!'
+            text: 'you already have a pending session!'
         })
     }
 });

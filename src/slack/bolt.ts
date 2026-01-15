@@ -1,5 +1,6 @@
 import { App, ExpressReceiver } from '@slack/bolt';
 import { Config } from '../config';
+import { registerRoutes } from '../routes/event';
 
 const expressReciever = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
@@ -14,6 +15,8 @@ expressReciever.app.get('/health', async (req, res) => {
  
   res.status(200).send('OK');
 });
+
+registerRoutes(expressReciever.app);
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,

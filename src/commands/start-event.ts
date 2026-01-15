@@ -10,7 +10,7 @@ app.command('/start-event', async ({ ack, payload }) => {
     if (!Admins.includes(payload.user_id)) {
         await whisper({
             user: payload.user_id,
-            text: "you don't have permission to do that!"
+            text: "You don't have permission to do that!"
         });
         return;
     }
@@ -20,7 +20,7 @@ app.command('/start-event', async ({ ack, payload }) => {
     if (!eventName) {
         await whisper({
             user: payload.user_id,
-            text: "please provide an event name: `/start-event <name>`"
+            text: "Please provide an event name: `/start-event <name>`"
         });
         return;
     }
@@ -46,10 +46,5 @@ app.command('/start-event', async ({ ack, payload }) => {
         user: payload.user_id,
         channel: payload.channel_id,
         type: 'event'
-    });
-
-    await whisper({
-        user: payload.user_id,
-        text: `event "${event.name}" started!`
     });
 });

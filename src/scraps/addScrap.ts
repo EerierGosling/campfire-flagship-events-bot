@@ -7,7 +7,7 @@ import { t } from "../util/transcript";
 
 import end from "../sessions/end";
 import { Config } from "../config";
-import { msToCups } from "../util/math";
+
 import { scraps } from "../util/airtable";
 import type { Attachment } from "airtable";
 
@@ -91,20 +91,10 @@ export async function addScrap(args: {
     });
 
     switch (args.session.state) {
-        case 'WAITING_FOR_INITIAL_SCRAP':  
-            await app.client.chat.postMessage({
-                channel: Config.SCRAPS_CHANNEL,
-                text: t('logged_goal'),
-                thread_ts: args.scrap.ts
-            });
-
-            break;
         case 'SESSION_PENDING':
             await app.client.chat.postMessage({
                 channel: Config.SCRAPS_CHANNEL,
-                text: t('logged_scrap', {
-                    cups: msToCups(updatedSession.elapsed)
-                }),
+                text: t('logged_scrap'),
                 thread_ts: args.scrap.ts
             });
 
@@ -114,30 +104,31 @@ export async function addScrap(args: {
                 throw new Error('Session is in WAITING_FOR_FINAL_SCRAP state but leftAt is null');
             }
 
-            end(updatedSession);
+            const ONE_HOUR_MS = 60 * 60 * 1000;
+            if (updatedSession.elapsed < ONE_HOUR_MS) {
+                await prisma.session.update({
+                    where: { id: updatedSession.id },
+                    data: { state: 'CANCELLED' }
+                });
 
-            const lifetimeElapsed = await prisma.session.aggregate({
-                where: {
-                    slackId: updatedSession.slackId,
-                    state: 'COMPLETED',                
-                },
-                _sum: {
-                    elapsed: true,
-                }
-            });
+                console.log(`session cancelled for ${updatedSession.slackId} - only ${Math.floor(updatedSession.elapsed / 60000)} minutes`);
 
-            const totalCups = lifetimeElapsed._sum.elapsed ? lifetimeElapsed._sum.elapsed : 0;
+                await app.client.chat.postMessage({
+                    channel: Config.SCRAPS_CHANNEL,
+                    text: `thanks for showing us what you made! unfortunately, your session was only ${Math.floor(updatedSession.elapsed / 60000)} minutes - you need at least 60 minutes for it to count.`,
+                    thread_ts: args.scrap.ts
+                });
+            } else {
+                end(updatedSession);
 
-            console.log(`session completed. total cups lifetime: ${msToCups(totalCups)} cups`);
- 
-            await app.client.chat.postMessage({
-                channel: Config.SCRAPS_CHANNEL,
-                text: t('finish', {
-                    cups: msToCups(updatedSession.elapsed),
-                    totalCups: msToCups(totalCups)
-                }),
-                thread_ts: args.scrap.ts
-            });
+                console.log(`session completed for ${updatedSession.slackId}`);
+     
+                await app.client.chat.postMessage({
+                    channel: Config.SCRAPS_CHANNEL,
+                    text: t('finish'),
+                    thread_ts: args.scrap.ts
+                });
+            }
     }
 
     // prepare files to be attached to airtable

@@ -1,183 +1,38 @@
 templates:
-  huddle_join: #todo: copy review
+  huddle_join:
     - |
-      _omg omg!_ you just joined the huddle!
+      you joined the huddle!
 
-      *make sure to tell everyone about what you're working on!* i'll start brewin' up your cup right after :3
+      an event is running right now. if you stay in the huddle for an hour and post what you worked on afterwards in <#C0A82QMCQBZ>, it'll count towards your progress for a boost!
 
-      say something like:
-      ```
-      i'm hacking on ________!! (fill in the blank)
-      ```
-
-      for example:
-      ```
-      i'm making the text boxes on my personal site draggable!
-      i'm working on the schematic of my rubber ducky pcb :3
-      i'm starting a slack bot that tracks time!!
-      ```
-      you can also send images with the message of what you're working on!
-
-      feel free to also send messages in this channel normally after, for example:
-      • progress updates! huge breakthroughs and cool demos are more than welcome!
-      • questions and asking for technical help! at the cafe, we're all here to help :D 
   huddle_left:
     - |
-      <@${slackId}> leaving? that means it's time to make a ship post of what you've done in the session :rac_woah: 
-
-      *post in channel what you've done while on huddle, with an attached image!*
+      <@${slackId}> you left the huddle! post what you worked on in <#C0A82QMCQBZ> with an attached image to get your attendance verified!
       
-      if you accidentally left, join back the huddle in the next 10 minutes for me to resume your time :rac_wtf: 
-      you _must_ make a ship post, or none of the time you just huddled for will be counted! 
+      if you accidentally left, rejoin within 10 minutes to resume.
+      your time won't count unless you post what you worked on in <#C0A82QMCQBZ>.
 
   logged_goal:
-    - "nice! i've logged your goal for today! keep me updated on your progress :3"
+    - "got it! your session has started."
   logged_scrap:
-    - "woah, whatcha makin' there? :rac_cute:"
-    - "omg omg!! scrap, scrap!!! :rac_cute:"
-    - "i wish,, i wish i could make things like that :rac_shy:"
-    - "that looks so fun!! i'd be making too if i wasn't on the job :rac_pf:"
-    - "you're currently on you ${cups} cup today!"
-#    - "_twitch_ that's more cups my raccoon head could take,, you sure this is safe??" #todo if [numberth] > 5:
+    - "nice progress!"
+    - "looking good!"
+    - "keep it up!"
+    - "great work!"
   finish:
     - |
-      leaving the cafe?? i hope you enjoyed it!!
-      you've drank ${cups} cups this session, which puts you at a grand total of number ${totalCups} :rac_woah:
-      come back again for more!! :rac_shy:
+      thanks for logging your work! we'll verify your attendance as soon as we can.
 
   tip:
-    - "pssst... unsure of what to do? run `/cafe-help` or ask in <#C08CEPW99JP>!"
-
-  joined_channel:
-    - |
-      `twitch,, twitch!!` welcome to the #cafe!!
-
-      get your cafe mode _ON_, and let me show you around!!
-
-      first things first: join #cafe-bulletin!! this is where everything important is posted :rac_woah: 
-
-      what do you actually do in this cafe??
-      join the huddle!!
-      post in channel what personal project you're working on
-      every hour you hack, i'll bring you a :cup: cup!! 
-      after you're done, leave the huddle, then ship what you did that session by posting in channel with an image! (demo links also appreciated)
-
-      want to just join the huddle and yap? use the `/yap` command to do so, once you join the huddle! 
-
-      that's it! if you have any questions, feel free to post them in this channel :rac_shy: enjoy your stay!!
-
-  inactivity:
-    - "it's been 10 minutes since you've joined! since you didn't post your initial scrap, i thought you were inactive, so i stopped tracking your time! rejoin and try again."
+    - "not sure what to do? ask in <#C0A6KLGRZQE> or run /flagship-event-help!"
 
   pause_timeout:
     - |
-      <@${slackId}> it's been 10 minutes since you've left the call, and i don't see any ships from you!!
+      <@${slackId}> it's been 10 minutes since you left and i haven't seen a post on what you did!
 
-      i'm going to wipe your time for this session - remember, it doesn't count unless you ship something after you leave the call :rac_pf: 
+      i'm clearing your time for this session. please post what you made with an image to count your attendance next time!
 
-      _remember, a ship needs to have an image attached to count, and must be something you've done in that huddle session - some examples:_
-      - _i made player movement in my game!_
-      - _i made it so my bot responds to my messages_
-      - _i added and wired up some decoupling capacitors on my schematic :3_
-  update_reminder:
-    - | 
-      <@${slackId}> it's been 45 minutes since you joined the huddle, and i haven't seen any scraps from you! i need to see at least one scrap from you per hour, or i'll assume you've gone afk and wipe your time. 
-
-      _a scrap is a update post on your project, attached with an image_ :rac_info: 
-  afk_timeout:
-    - |
-      <@${slackId}> you good there? it's been _a whole hour_, and i haven't seen you move!! 
-
-      going to boot you from this place to make room - next time, remember to post scraps of what you've been making into the channel :racpf: 
-
-      if you're here to yap, that's fine too, just remember to use /yap when you're on, so that it doesn't track your time!!
-
-  yap:
-    no_scrap:
-      - |
-        just chilling? that's fine!
-        i stopped tracking your time, but if you wanna start hacking again while on call, run `/hack`!
-
-    final_scrap:
-      - |
-        seems like you're done with hacking! 
-
-        make a ship post of what you've done in the session :rac_woah: and i'll count your time!
-        *make sure you attach an image to your ship!*
-
-        otherwise, feel free to stay and yap with us :3
-  
-  hack:
+  start_eventing:
     initial_scrap:
       - |
-        *make sure to tell everyone about what you're working on!* i'll start brewin' up your cup right after :3
-
-        say something like:
-        ```
-        i'm hacking on ________!! (fill in the blank)
-        ```
-
-        for example:
-        ```
-        i'm making the text boxes on my personal site draggable!
-        i'm working on the schematic of my rubber ducky pcb :3
-        i'm starting a slack bot that tracks time!!
-        ```
-        you can also send images with the message of what you're working on!
-
-        feel free to also send messages in this channel normally after, for example:
-        • progress updates! huge breakthroughs and cool demos are more than welcome!
-        • questions and asking for technical help! at the cafe, we're all here to help :D
-
-  help:
-    no_session:
-      header: 
-        - "it seems like you're not in a session!"
-      text:
-        - "to start a session, join the huddle!"
-    initial_scrap:
-      header:
-        - "i'm waiting for your first scrap! let me give you the rundown again:"
-      text:
-        - |
-          *make sure to tell everyone about what you're working on!* i'll start brewin' up your cup right after :3
-
-          say something like:
-          ```
-          i'm hacking on ________!! (fill in the blank)
-          ```
-
-          for example:
-          ```
-          i'm making the text boxes on my personal site draggable!
-          i'm working on the schematic of my rubber ducky pcb :3
-          i'm starting a slack bot that tracks time!!
-          ```
-          you can also send images with the message of what you're working on!
-
-          feel free to also send messages in this channel normally after, for example:
-          • progress updates! huge breakthroughs and cool demos are more than welcome!
-          • questions and asking for technical help! at the cafe, we're all here to help :D
-    session_pending:
-      header:
-        - "you're currently in a session!"
-      text:
-        - "while you're in a session, make sure to post scraps (images!) of what you're working on every hour! after you leave, make sure to ship what you've done in the session with an image attached!"
-    final_scrap:
-      header:
-        - "i'm waiting for your final scrap! let me give you the rundown again:"
-      text:
-        - | 
-          it's time to make a ship post of what you've done in the session :rac_woah: 
-
-          *post in channel what you've done while on huddle, with an attached image!*
-          
-          you _must_ make a ship post, or none of the time you just huddled for will be counted! 
-    unknown_state:
-      header:
-        - "something went wrong"
-      text:
-        - "i'm a little slow rn *twitch twitch* try again in a bit"
-  
-
-  flow_img: https://cloud-1u362wm6h-hack-club-bot.vercel.app/0image.png
+        when you leave the huddle, make sure to post what you worked on in <#C0A82QMCQBZ> with an attached image to get your attendance verified!

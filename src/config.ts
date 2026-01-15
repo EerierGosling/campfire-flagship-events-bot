@@ -1,7 +1,7 @@
 import { minutes } from "./util/math"
 
 export const Config = {
-    MAIN_CHANNEL: 'C08C6BZCE11',
+    MAIN_CHANNEL: 'C0A1GH3FY4T',
     SCRAPS_CHANNEL: 'C0A82QMCQBZ',
     LOGS_CHANNEL: 'C0A8CU5PY9K'
 }
@@ -19,15 +19,7 @@ export const Intervals = {
     HUDDLE_CHECK: minutes(1),
 }
 
-export const Commands = process.env.DEV ? {
-    CUPS: '/test-cups',
-    BOARD: '/test-board',
-    HELP: '/test-help',
-}: {
-    CUPS: '/cups',
-    BOARD: '/board',
-    HELP: '/cafe-help',
-}
+
 
 export const Admins = [
     'U056J6JURFF', // sofia

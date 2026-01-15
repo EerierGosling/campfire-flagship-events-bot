@@ -38,7 +38,7 @@ export default async (args: {
     if (!activeEvent) {
         await whisper({
             user: args.slackId,
-            text: `There's no active event right now! Ask an admin to start one if you think there should be.`
+            text: `there's no active event right now! ask an admin to start one if you think there should be.`
         });
         return;
     }
@@ -67,7 +67,7 @@ export default async (args: {
         whisper({
             channel: Config.MAIN_CHANNEL,
             user: args.slackId,
-            text: 'Welcome back! I\'ve unpaused your session.'
+            text: 'welcome back! i\'ve unpaused your session.'
         });
     } else if (sessionState === 'NOT_IN_SESSION') {
         await start({

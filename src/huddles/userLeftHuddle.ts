@@ -29,16 +29,12 @@ export default async (args: {
 
     if (!session) { return; }
 
-    if (session.state === 'WAITING_FOR_INITIAL_SCRAP') {
-        // delete if there's no scrap
-        await cancel(session, "left without posting goal");
-        
-        whisper({
-            user: args.slackId,
-            text: 'you left the huddle!'
-        });
-    } else if (session.state === 'SESSION_PENDING') {
+    if (session.state === 'SESSION_PENDING') {
         const now = new Date();
+        const currentElapsed = session.elapsed + (now.getTime() - session.lastUpdate.getTime());
+        const ONE_HOUR_MS = 60 * 60 * 1000;
+        const hasEnoughTime = currentElapsed >= ONE_HOUR_MS;
+        const minutesRemaining = Math.ceil((ONE_HOUR_MS - currentElapsed) / 60000);
 
         await prisma.session.update({
             where: {
@@ -47,22 +43,27 @@ export default async (args: {
             data: {
                 state: 'WAITING_FOR_FINAL_SCRAP',
                 leftAt: now,
-                // lastUpdate: now,
-                // elapsed: session.elapsed + (now.getTime() - session.lastUpdate.getTime()), - do not update the time if the user goes afk
                 paused: true
             }
         });
 
-        whisper({
-            user: args.slackId,
-            text: t('huddle_left', {
-                slackId: args.slackId
-            })
-        });
+        if (hasEnoughTime) {
+            whisper({
+                user: args.slackId,
+                text: t('huddle_left', {
+                    slackId: args.slackId
+                })
+            });
+        } else {
+            whisper({
+                user: args.slackId,
+                text: `<@${args.slackId}> you left the huddle, but you've only been here for ${Math.floor(currentElapsed / 60000)} minutes! you need at least 60 minutes for it to count.\n\ncome back and stay for ${minutesRemaining} more minute${minutesRemaining === 1 ? '' : 's'}, then post what you worked on in <#C0A82QMCQBZ> with an image.`
+            });
+        }
     } else {
         whisper({
             user: args.slackId,
-            text: 'you left the huddle!'
+            text: 'You left the huddle!'
         });
     }
 }

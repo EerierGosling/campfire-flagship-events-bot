@@ -38,9 +38,4 @@ app.command('/end-event', async ({ ack, payload }) => {
         channel: payload.channel_id,
         type: 'event'
     });
-
-    await whisper({
-        user: payload.user_id,
-        text: `event "${event.name}" ended!`
-    });
 });

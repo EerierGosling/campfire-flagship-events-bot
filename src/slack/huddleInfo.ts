@@ -11,7 +11,7 @@ for (const key in headerData) {
 
 const body = JSON.stringify({
     "token": process.env.SLACK_CLIENT_TOKEN,
-    "channel_ids": ["C08C6BZCE11"],
+    "channel_ids": ["C0A1GH3FY4T"],
 });
 
 export type Huddle = {
