@@ -92,7 +92,7 @@ app.command("/check-progress", async ({ ack, payload }) => {
         progressText += `\n\nyou've unlocked all available boosts!`;
     }
     
-    progressText += `\n\n:red_circle: = approved  :white_circle: = completed (pending approval)`;
+    progressText += `\n\n:red-star: = approved  :grey-star: = completed (pending approval)`;
 
     blocks.push({
         type: 'section',
