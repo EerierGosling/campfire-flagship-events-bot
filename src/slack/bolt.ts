@@ -25,4 +25,8 @@ const app = new App({
   receiver: expressReciever,
 });
 
+app.error(async (error) => {
+  console.error('Bolt error:', error);
+});
+
 export { app };
