@@ -57,6 +57,7 @@ export const progressImageUrls: Record<string, string> = {
 };
 
 export function getProgressImageUrl(approved: number, completed: number): string {
-    const key = `${approved}-${completed}`;
+    const total = approved + completed;
+    const key = `${approved}-${total}`;
     return progressImageUrls[key] || "";
 }
