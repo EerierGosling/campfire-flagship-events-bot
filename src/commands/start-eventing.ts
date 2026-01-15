@@ -50,43 +50,41 @@ app.command('/start-eventing', async ({ ack, payload }) => {
         }
     });
 
-    if (!session || session.state === 'CANCELLED' || session.state === 'COMPLETED') { 
-        // check if the user is in a huddle
-        const huddle = await activeHuddle();
-
-        if (!huddle) {
-            await whisper({
-                user: payload.user_id,
-                text: `seems like there's no huddle right now.`
-            });
-
-            return;
-        } else if (!huddle.active_members.includes(payload.user_id)) {
-            await whisper({
-                user: payload.user_id,
-                text: `seems like you're not in the huddle - you should join!`
-            });
-
-            return;
-        } else {
-            await whisper({
-                user: payload.user_id,
-                text: t('start_eventing.initial_scrap')
-            })
-
-            await start({
-                slackId: payload.user_id,
-                callId: huddle.call_id,
-                event: activeEvent.name
-            });
-
-            return;
-        }
-    }
-    else {
+    if (session) {
         await whisper({
-            user: session.slackId,
+            user: payload.user_id,
             text: 'you already have a pending session!'
-        })
+        });
+        return;
     }
+
+    // check if the user is in a huddle
+    const huddle = await activeHuddle();
+
+    if (!huddle) {
+        await whisper({
+            user: payload.user_id,
+            text: `seems like there's no huddle right now.`
+        });
+        return;
+    }
+    
+    if (!huddle.active_members.includes(payload.user_id)) {
+        await whisper({
+            user: payload.user_id,
+            text: `seems like you're not in the huddle - you should join!`
+        });
+        return;
+    }
+
+    await whisper({
+        user: payload.user_id,
+        text: t('start_eventing.initial_scrap')
+    });
+
+    await start({
+        slackId: payload.user_id,
+        callId: huddle.call_id,
+        event: activeEvent.name
+    });
 });

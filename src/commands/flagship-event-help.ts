@@ -31,8 +31,9 @@ app.command("/flagship-event-help", async ({ ack, payload }) => {
             const userSessions = await Promise.all(
                 sessionIds.map(id => sessions.find(id))
             );
-            approvedCount = userSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
-            pendingCount = userSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
+            const completedSessions = userSessions.filter(s => s.fields['State'] === 'COMPLETED');
+            approvedCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
+            pendingCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
         }
 
         const progressImageUrl = getProgressImageUrl(approvedCount, pendingCount);
