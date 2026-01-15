@@ -9,7 +9,7 @@
     "typescript": "^5.7.3"
   },
   "scripts": {
-    "start": "bun run ./src/entry.ts"
+    "start": "bun run ./src/entry.ts && prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^6.4.0",
