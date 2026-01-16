@@ -26,4 +26,8 @@ export const Admins = [
     'U05D1G4H754', // evan
     'U07FCRNHS1J', // augie
     'U080YU735H8', // violet
+    'U089924LMK8', // astra
+    'U095T5UB8DS', // noob
+    'U08TYFNC9GC', // shyla
+    'U06MYDS2LHX', // luke
 ]
