@@ -1,4 +1,4 @@
-import { Admins } from "../config";
+import { isAdmin } from "../util/isAdmin";
 import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { app } from "../slack/bolt";
@@ -8,7 +8,7 @@ import { cmd } from "../config";
 app.command(cmd('/start-event'), async ({ ack, payload }) => {
     await ack();
 
-    if (!Admins.includes(payload.user_id)) {
+    if (!await isAdmin(payload.user_id)) {
         await whisper({
             user: payload.user_id,
             text: "You don't have permission to do that!"
