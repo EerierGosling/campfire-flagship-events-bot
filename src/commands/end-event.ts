@@ -33,8 +33,30 @@ app.command(cmd('/end-event'), async ({ ack, payload }) => {
         data: { active: false }
     });
 
+    // Transition all active sessions to WAITING_FOR_FINAL_SCRAP
+    const activeSessions = await prisma.session.findMany({
+        where: { state: 'SESSION_PENDING' }
+    });
+
+    const now = new Date();
+    for (const session of activeSessions) {
+        await prisma.session.update({
+            where: { id: session.id },
+            data: {
+                state: 'WAITING_FOR_FINAL_SCRAP',
+                leftAt: now,
+                paused: true
+            }
+        });
+        
+        await whisper({
+            user: session.slackId,
+            text: `the event "${event.name}" has ended! post what you worked on in <#${process.env.SCRAPS_CHANNEL}> with an attached image to complete your session.`
+        });
+    }
+
     await mirrorMessage({
-        message: `ended event: "${event.name}"`,
+        message: `ended event: "${event.name}" (${activeSessions.length} sessions transitioned)`,
         user: payload.user_id,
         channel: payload.channel_id,
         type: 'event'
