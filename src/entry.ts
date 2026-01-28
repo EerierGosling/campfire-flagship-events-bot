@@ -15,6 +15,7 @@ import './commands/start-event'
 import './commands/end-event'
 import './commands/flagship-event-help'
 import './commands/check-event-running'
+import './commands/event-opt-out'
 
 import './scraps/message';
 
@@ -33,16 +34,30 @@ async function cleanupOrphanedSessions() {
     const now = new Date();
     let cleaned = 0;
 
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+    
     for (const session of pendingSessions) {
         if (!currentMembers.includes(session.slackId)) {
-            await prisma.session.update({
-                where: { id: session.id },
-                data: {
-                    state: 'WAITING_FOR_FINAL_SCRAP',
-                    leftAt: now,
-                    paused: true
-                }
+            const scrapCount = await prisma.scrap.count({
+                where: { sessionId: session.id }
             });
+            const elapsed = session.elapsed + (now.getTime() - session.lastUpdate.getTime());
+            
+            if (scrapCount > 0 && elapsed >= ONE_HOUR_MS) {
+                await prisma.session.update({
+                    where: { id: session.id },
+                    data: { state: 'COMPLETED' }
+                });
+            } else {
+                await prisma.session.update({
+                    where: { id: session.id },
+                    data: {
+                        state: 'WAITING_FOR_FINAL_SCRAP',
+                        leftAt: now,
+                        paused: true
+                    }
+                });
+            }
             cleaned++;
         }
     }

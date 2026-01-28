@@ -39,20 +39,37 @@ app.command(cmd('/end-event'), async ({ ack, payload }) => {
     });
 
     const now = new Date();
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+    
     for (const session of activeSessions) {
-        await prisma.session.update({
-            where: { id: session.id },
-            data: {
-                state: 'WAITING_FOR_FINAL_SCRAP',
-                leftAt: now,
-                paused: true
-            }
+        const scrapCount = await prisma.scrap.count({
+            where: { sessionId: session.id }
         });
+        const elapsed = session.elapsed + (now.getTime() - session.lastUpdate.getTime());
         
-        await whisper({
-            user: session.slackId,
-            text: `the event "${event.name}" has ended! post what you worked on in <#${process.env.SCRAPS_CHANNEL}> with an attached image to complete your session.`
-        });
+        if (scrapCount > 0 && elapsed >= ONE_HOUR_MS) {
+            await prisma.session.update({
+                where: { id: session.id },
+                data: { state: 'COMPLETED' }
+            });
+            await whisper({
+                user: session.slackId,
+                text: `the event "${event.name}" has ended! your session has been completed automatically since you already posted your work.`
+            });
+        } else {
+            await prisma.session.update({
+                where: { id: session.id },
+                data: {
+                    state: 'WAITING_FOR_FINAL_SCRAP',
+                    leftAt: now,
+                    paused: true
+                }
+            });
+            await whisper({
+                user: session.slackId,
+                text: `the event "${event.name}" has ended! post what you worked on in <#${process.env.SCRAPS_CHANNEL}> with an attached image to complete your session.`
+            });
+        }
     }
 
     await mirrorMessage({

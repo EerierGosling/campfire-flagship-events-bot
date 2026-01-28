@@ -36,29 +36,42 @@ export default async (args: {
         const hasEnoughTime = currentElapsed >= ONE_HOUR_MS;
         const minutesRemaining = Math.ceil((ONE_HOUR_MS - currentElapsed) / 60000);
 
-        await prisma.session.update({
-            where: {
-                id: session.id
-            },
-            data: {
-                state: 'WAITING_FOR_FINAL_SCRAP',
-                leftAt: now,
-                paused: true
-            }
+        const scrapCount = await prisma.scrap.count({
+            where: { sessionId: session.id }
         });
 
-        if (hasEnoughTime) {
+        if (scrapCount > 0 && hasEnoughTime) {
+            await prisma.session.update({
+                where: { id: session.id },
+                data: { state: 'COMPLETED' }
+            });
             whisper({
                 user: args.slackId,
-                text: t('huddle_left', {
-                    slackId: args.slackId
-                })
+                text: `you left the huddle! your session has been completed automatically since you already posted your work.`
             });
         } else {
-            whisper({
-                user: args.slackId,
-                text: `<@${args.slackId}> you left the huddle, but you've only been here for ${Math.floor(currentElapsed / 60000)} minutes! you need at least 60 minutes for it to count.\n\ncome back and stay for ${minutesRemaining} more minute${minutesRemaining === 1 ? '' : 's'}, then post what you worked on in <#C0A82QMCQBZ> with an image.`
+            await prisma.session.update({
+                where: { id: session.id },
+                data: {
+                    state: 'WAITING_FOR_FINAL_SCRAP',
+                    leftAt: now,
+                    paused: true
+                }
             });
+
+            if (hasEnoughTime) {
+                whisper({
+                    user: args.slackId,
+                    text: t('huddle_left', {
+                        slackId: args.slackId
+                    })
+                });
+            } else {
+                whisper({
+                    user: args.slackId,
+                    text: `<@${args.slackId}> you left the huddle, but you've only been here for ${Math.floor(currentElapsed / 60000)} minutes! you need at least 60 minutes for it to count.\n\ncome back and stay for ${minutesRemaining} more minute${minutesRemaining === 1 ? '' : 's'}, then post what you worked on in <#C0A82QMCQBZ> with an image.`
+                });
+            }
         }
     } else {
         whisper({
