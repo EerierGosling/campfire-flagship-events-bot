@@ -1,9 +1,12 @@
 import { minutes } from "./util/math"
 
+const isDev = process.env.DEVELOPMENT === 'true';
+export const cmd = (name: string) => isDev ? `${name}-dev` : name;
+
 export const Config = {
-    MAIN_CHANNEL: 'C0A1GH3FY4T',
-    SCRAPS_CHANNEL: 'C0A82QMCQBZ',
-    LOGS_CHANNEL: 'C0A8CU5PY9K'
+    MAIN_CHANNEL: process.env.MAIN_CHANNEL!,
+    SCRAPS_CHANNEL: process.env.SCRAPS_CHANNEL!,
+    LOGS_CHANNEL: process.env.LOGS_CHANNEL!
 }
 
 export const Intervals = {

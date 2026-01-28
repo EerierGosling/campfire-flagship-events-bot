@@ -4,8 +4,9 @@ import { mirrorMessage } from "../slack/logger";
 import { prisma } from "../util/prisma";
 import { users, sessions } from "../util/airtable";
 import { getProgressImageUrl } from "../util/progressImageUrls";
+import { cmd } from "../config";
 
-app.command("/flagship-event-help", async ({ ack, payload }) => {
+app.command(cmd("/flagship-event-help"), async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({

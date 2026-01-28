@@ -3,8 +3,9 @@ import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { app } from "../slack/bolt";
 import { prisma } from "../util/prisma";
+import { cmd } from "../config";
 
-app.command('/start-event', async ({ ack, payload }) => {
+app.command(cmd('/start-event'), async ({ ack, payload }) => {
     await ack();
 
     if (!Admins.includes(payload.user_id)) {

@@ -6,10 +6,11 @@ import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { prisma } from "../util/prisma";
 import { t } from "../util/transcript";
+import { cmd } from "../config";
 
 // pretty much treat this as the user joining the huddle
 
-app.command('/start-eventing', async ({ ack, payload }) => {
+app.command(cmd('/start-eventing'), async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({

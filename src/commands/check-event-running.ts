@@ -1,8 +1,9 @@
 import { app } from "../slack/bolt";
 import { mirrorMessage } from "../slack/logger";
 import { prisma } from "../util/prisma";
+import { cmd } from "../config";
 
-app.command("/check-event-running", async ({ ack, payload }) => {
+app.command(cmd("/check-event-running"), async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({

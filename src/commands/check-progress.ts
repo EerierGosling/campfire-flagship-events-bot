@@ -5,8 +5,9 @@ import { prisma } from "../util/prisma";
 import { msToMinutes } from "../util/math";
 import { users, sessions } from "../util/airtable";
 import { getProgressImageUrl } from "../util/progressImageUrls";
+import { cmd } from "../config";
 
-app.command("/check-progress", async ({ ack, payload }) => {
+app.command(cmd("/check-progress"), async ({ ack, payload }) => {
     await ack();
 
     await mirrorMessage({
