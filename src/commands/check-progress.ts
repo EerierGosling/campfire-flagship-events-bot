@@ -133,6 +133,7 @@ app.command(cmd("/check-progress"), async ({ ack, payload }) => {
     await app.client.chat.postEphemeral({
         channel: payload.channel_id,
         user: payload.user_id,
+        text: progressText,
         blocks
     });
 });
