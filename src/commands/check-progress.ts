@@ -44,13 +44,6 @@ app.command(cmd("/check-progress"), async ({ ack, payload }) => {
 
     const airtableUser = await users.find(user.airtableRecId);
     console.log(airtableUser);
-
-    const completedSessionCount = await prisma.session.count({
-        where: {
-            slackId: payload.user_id,
-            state: 'COMPLETED'
-        }
-    });
     
     const approvedCount = (airtableUser.fields['# Approved Sessions'] as number) || 0;
     const pendingCount = (airtableUser.fields['# Pending Sessions'] as number) || 0;
