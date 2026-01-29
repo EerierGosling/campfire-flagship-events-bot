@@ -85,6 +85,7 @@ app.command(cmd("/flagship-event-help"), async ({ ack, payload }) => {
 • \`/start-eventing\` - manually start a session (if you joined before an event started)
 • \`/check-progress\` - see your progress and how many calls until your next boost
 • \`/check-event-running\` - check if an event is currently running
+• \`/event-opt-out\` - run this if you just want to sit in the huddle and talk!
 • \`/flagship-event-help\` - show this message`
         }
     });
