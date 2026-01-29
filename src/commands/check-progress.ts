@@ -3,7 +3,7 @@ import { app } from "../slack/bolt";
 import { mirrorMessage } from "../slack/logger";
 import { prisma } from "../util/prisma";
 import { msToMinutes } from "../util/math";
-import { users, sessions } from "../util/airtable";
+import { users } from "../util/airtable";
 import { getProgressImageUrl } from "../util/progressImageUrls";
 import { cmd } from "../config";
 
@@ -51,26 +51,9 @@ app.command(cmd("/check-progress"), async ({ ack, payload }) => {
             state: 'COMPLETED'
         }
     });
-
-    const sessionIds = (airtableUser.fields['Sessions'] || []) as string[];
     
-    let approvedCount = 0;
-    let pendingCount = 0;
-    if (sessionIds.length > 0) {
-        const userSessions = await Promise.all(
-            sessionIds.map(id => sessions.find(id))
-        );
-        const completedSessions = userSessions.filter(s => s.fields['State'] === 'COMPLETED');
-        approvedCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
-        pendingCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
-        
-        console.log('User sessions from Airtable:', userSessions.map(s => ({
-            id: s.id,
-            'Approval Status': s.fields['Approval Status']
-        })));
-    }
-    
-    console.log(`User ${payload.user_id}: ${sessionIds.length} sessions, ${approvedCount} approved, ${pendingCount} pending`);
+    const approvedCount = (airtableUser.fields['# Approved Sessions'] as number) || 0;
+    const pendingCount = (airtableUser.fields['# Pending Sessions'] as number) || 0;
 
     const progressImageUrl = getProgressImageUrl(approvedCount, pendingCount);
 

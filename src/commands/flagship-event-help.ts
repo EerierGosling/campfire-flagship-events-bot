@@ -2,7 +2,7 @@ import type { AnyBlock } from "@slack/types";
 import { app } from "../slack/bolt";
 import { mirrorMessage } from "../slack/logger";
 import { prisma } from "../util/prisma";
-import { users, sessions } from "../util/airtable";
+import { users } from "../util/airtable";
 import { getProgressImageUrl } from "../util/progressImageUrls";
 import { cmd } from "../config";
 
@@ -24,18 +24,11 @@ app.command(cmd("/flagship-event-help"), async ({ ack, payload }) => {
 
     if (user) {
         const airtableUser = await users.find(user.airtableRecId);
-        const sessionIds = (airtableUser.fields['Sessions'] || []) as string[];
         
-        let approvedCount = 0;
-        let pendingCount = 0;
-        if (sessionIds.length > 0) {
-            const userSessions = await Promise.all(
-                sessionIds.map(id => sessions.find(id))
-            );
-            const completedSessions = userSessions.filter(s => s.fields['State'] === 'COMPLETED');
-            approvedCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Approved').length;
-            pendingCount = completedSessions.filter(s => s.fields['Approval Status'] === 'Pending').length;
-        }
+        const approvedCount = (airtableUser.fields['# Approved Sessions'] as number) || 0;
+        const pendingCount = (airtableUser.fields['# Pending Sessions'] as number) || 0;
+
+        console.log("approved", airtableUser.fields['# Approved Sessions'])
 
         const progressImageUrl = getProgressImageUrl(approvedCount, pendingCount);
 
