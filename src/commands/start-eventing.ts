@@ -6,12 +6,18 @@ import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { prisma } from "../util/prisma";
 import { t } from "../util/transcript";
-import { cmd } from "../config";
+import { cmd, BLOCKED_SLACK_IDS } from "../config";
 
 // pretty much treat this as the user joining the huddle
 
 app.command(cmd('/start-eventing'), async ({ ack, payload }) => {
     await ack();
+
+    // Block command execution for blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(payload.user_id)) {
+        console.log(`Blocked command /start-eventing for ${payload.user_id}`);
+        return;
+    }
 
     await mirrorMessage({
         message: 'user ran `/start-eventing`',

@@ -3,10 +3,13 @@ import { prisma } from "../util/prisma";
 
 import { addScrap } from "./addScrap";
 
-import { Config } from "../config";
+import { Config, BLOCKED_SLACK_IDS } from "../config";
 
 app.event('message', async ({ event, client }) => {
     if (event.channel !== Config.SCRAPS_CHANNEL) { return; }
+    
+    // Block messages from blocked Slack IDs
+    if (event.user && BLOCKED_SLACK_IDS.includes(event.user)) { return; }
 
     switch (event.subtype) {
         case 'file_share': 

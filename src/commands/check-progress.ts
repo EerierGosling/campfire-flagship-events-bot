@@ -5,10 +5,16 @@ import { prisma } from "../util/prisma";
 import { msToMinutes } from "../util/math";
 import { users } from "../util/airtable";
 import { getProgressImageUrl } from "../util/progressImageUrls";
-import { cmd } from "../config";
+import { cmd, BLOCKED_SLACK_IDS } from "../config";
 
 app.command(cmd("/check-progress"), async ({ ack, payload }) => {
     await ack();
+
+    // Block command execution for blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(payload.user_id)) {
+        console.log(`Blocked command /check-progress for ${payload.user_id}`);
+        return;
+    }
 
     await mirrorMessage({
         message: 'user ran `/check-progress`',

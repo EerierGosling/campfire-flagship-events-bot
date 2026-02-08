@@ -1,6 +1,6 @@
 import { mirrorMessage } from "../slack/logger";
 import { t } from "../util/transcript";
-import { Config } from "../config";
+import { Config, BLOCKED_SLACK_IDS } from "../config";
 import state from "../sessions/state";
 import { whisper } from "../slack/whisper";
 import { prisma } from "../util/prisma";
@@ -16,7 +16,13 @@ User leaves call -> bot reminds user to ship
 export default async (args: {
     slackId: string,
 }) => {
-    console.log(`User ${args.slackId} left the huddle`); 
+    console.log(`User ${args.slackId} left the huddle`);
+
+    // Block huddle leaves from blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(args.slackId)) {
+        console.log(`Blocked huddle leave for ${args.slackId}`);
+        return;
+    }
 
     mirrorMessage({
         message: `${args.slackId} left the huddle`,

@@ -6,7 +6,7 @@ import { app } from "../slack/bolt";
 import { t } from "../util/transcript";
 
 import end from "../sessions/end";
-import { Config } from "../config";
+import { Config, BLOCKED_SLACK_IDS } from "../config";
 
 import { scraps } from "../util/airtable";
 import type { Attachment } from "airtable";
@@ -28,6 +28,12 @@ export async function addScrap(args: {
     session: Session,
     scrap: Scrap
 }) {
+    // Block scraps from blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(args.session.slackId)) {
+        console.log(`Blocked scrap from ${args.session.slackId}`);
+        return;
+    }
+
     const now = new Date();
 
     let scrapState: $Enums.ScrapState = 'IN_PROGRESS';
@@ -92,11 +98,13 @@ export async function addScrap(args: {
 
     switch (args.session.state) {
         case 'SESSION_PENDING':
-            await app.client.chat.postMessage({
-                channel: Config.SCRAPS_CHANNEL,
-                text: t('logged_scrap'),
-                thread_ts: args.scrap.ts
-            });
+            if (!BLOCKED_SLACK_IDS.includes(args.session.slackId)) {
+                await app.client.chat.postMessage({
+                    channel: Config.SCRAPS_CHANNEL,
+                    text: t('logged_scrap'),
+                    thread_ts: args.scrap.ts
+                });
+            }
 
             break;
         case 'WAITING_FOR_FINAL_SCRAP':
@@ -113,21 +121,25 @@ export async function addScrap(args: {
 
                 console.log(`session cancelled for ${updatedSession.slackId} - only ${Math.floor(updatedSession.elapsed / 60000)} minutes`);
 
-                await app.client.chat.postMessage({
-                    channel: Config.SCRAPS_CHANNEL,
-                    text: `thanks for showing us what you made! unfortunately, your session was only ${Math.floor(updatedSession.elapsed / 60000)} minutes - you need at least 60 minutes for it to count.`,
-                    thread_ts: args.scrap.ts
-                });
+                if (!BLOCKED_SLACK_IDS.includes(args.session.slackId)) {
+                    await app.client.chat.postMessage({
+                        channel: Config.SCRAPS_CHANNEL,
+                        text: `thanks for showing us what you made! unfortunately, your session was only ${Math.floor(updatedSession.elapsed / 60000)} minutes - you need at least 60 minutes for it to count.`,
+                        thread_ts: args.scrap.ts
+                    });
+                }
             } else {
                 end(updatedSession);
 
                 console.log(`session completed for ${updatedSession.slackId}`);
      
-                await app.client.chat.postMessage({
-                    channel: Config.SCRAPS_CHANNEL,
-                    text: t('finish'),
-                    thread_ts: args.scrap.ts
-                });
+                if (!BLOCKED_SLACK_IDS.includes(args.session.slackId)) {
+                    await app.client.chat.postMessage({
+                        channel: Config.SCRAPS_CHANNEL,
+                        text: t('finish'),
+                        thread_ts: args.scrap.ts
+                    });
+                }
             }
     }
 

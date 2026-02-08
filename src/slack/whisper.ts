@@ -1,5 +1,5 @@
 import type { AnyBlock } from "@slack/types";
-import { Config } from "../config";
+import { Config, BLOCKED_SLACK_IDS } from "../config";
 import { app } from "./bolt"; 
 import { t } from "../util/transcript";
 
@@ -10,6 +10,12 @@ export async function whisper(args: {
     header?: string,
     image?: string
 }) {
+    // Block whispers to blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(args.user)) {
+        console.log(`Blocked whisper to ${args.user}`);
+        return;
+    }
+
     const blocks: AnyBlock[] = [
         {
 			"type": "context",

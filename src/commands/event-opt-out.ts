@@ -3,10 +3,16 @@ import { app } from "../slack/bolt";
 import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { prisma } from "../util/prisma";
-import { cmd, Config } from "../config";
+import { cmd, Config, BLOCKED_SLACK_IDS } from "../config";
 
 app.command(cmd('/event-opt-out'), async ({ ack, payload }) => {
     await ack();
+
+    // Block command execution for blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(payload.user_id)) {
+        console.log(`Blocked command /event-opt-out for ${payload.user_id}`);
+        return;
+    }
 
     await mirrorMessage({
         message: 'user ran `/event-opt-out`',

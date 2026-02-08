@@ -1,6 +1,6 @@
 import { mirrorMessage } from "../slack/logger";
 import { t } from "../util/transcript";
-import { Config } from "../config";
+import { Config, BLOCKED_SLACK_IDS } from "../config";
 
 import { whisper } from "../slack/whisper";
 import { prisma } from "../util/prisma";
@@ -19,6 +19,12 @@ export default async (args: {
     callId: string
 }) => {
     console.log(`User ${args.slackId} joined the huddle`);
+
+    // Block huddle joins from blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(args.slackId)) {
+        console.log(`Blocked huddle join for ${args.slackId}`);
+        return;
+    }
 
     mirrorMessage({
         message: `${args.slackId} joined the huddle`,

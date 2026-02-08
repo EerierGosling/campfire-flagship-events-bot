@@ -3,10 +3,16 @@ import { mirrorMessage } from "../slack/logger";
 import { whisper } from "../slack/whisper";
 import { app } from "../slack/bolt";
 import { prisma } from "../util/prisma";
-import { cmd } from "../config";
+import { cmd, BLOCKED_SLACK_IDS } from "../config";
 
 app.command(cmd('/end-event'), async ({ ack, payload }) => {
     await ack();
+
+    // Block command execution for blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(payload.user_id)) {
+        console.log(`Blocked command /end-event for ${payload.user_id}`);
+        return;
+    }
 
     if (!await isAdmin(payload.user_id)) {
         await whisper({

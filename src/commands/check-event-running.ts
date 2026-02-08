@@ -1,10 +1,16 @@
 import { app } from "../slack/bolt";
 import { mirrorMessage } from "../slack/logger";
 import { prisma } from "../util/prisma";
-import { cmd } from "../config";
+import { cmd, BLOCKED_SLACK_IDS } from "../config";
 
 app.command(cmd("/check-event-running"), async ({ ack, payload }) => {
     await ack();
+
+    // Block command execution for blocked Slack IDs
+    if (BLOCKED_SLACK_IDS.includes(payload.user_id)) {
+        console.log(`Blocked command /check-event-running for ${payload.user_id}`);
+        return;
+    }
 
     await mirrorMessage({
         message: 'user ran `/check-event-running`',

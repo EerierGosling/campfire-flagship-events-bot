@@ -10,6 +10,14 @@ export const Config = {
     TEAM_CHANNEL: process.env.TEAM_CHANNEL!
 }
 
+// Slack IDs to exclude from message posting
+export const BLOCKED_SLACK_IDS: string[] = [
+    // Add Slack IDs here that should not receive messages or have their messages processed
+    "U080YU735H8",
+    "U056J6JURFF",
+
+]
+
 export const Intervals = {
     PAUSE_CHECK: minutes(1),
     PAUSE_TIMEOUT: minutes(10),
@@ -22,3 +30,4 @@ export const Intervals = {
 
     HUDDLE_CHECK: minutes(1),
 }
+
