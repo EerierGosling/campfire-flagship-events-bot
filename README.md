@@ -1,31 +1,18 @@
-# heidi the barista
+# campfire flagship community events bot!
 
-Heidi (the barista) is the bot that ran #cafe on the hack club slack!
+this is a fork of [manitej](https://github.com/techpixel)'s [cafe bot](https://github.com/techpixel/barista)!
 
-Using an undocumented Slack API endpoint, specifically `huddles.info`, heidi was able to timestamp huddle joins and leaves, calculating and logging the time they spent in the huddle. 
+before campfire flagship, this bot was used to give people hour boosts if they locked in during huddles or attended workshops. it tracked when people joined the huddle in [#campfire-flagship](https://hackclub.enterprise.slack.com/archives/C0A1GH3FY4T) during an active event, and if they stayed in it for at least an hour and posted what they worked on in [#campfire-flagship-scraps](https://hackclub.enterprise.slack.com/archives/C0A82QMCQBZ) (& their session was approved on airtable), they got credit towards a boost!
 
-## how to run it yourself?
+to learn how to use the bot, run /flagship-event-help :)
+_(/flagship-event-help-dev) for the dev bot)_
 
-Heidi is written in Typescript. To quickly run it and get started, install `bun` and use `bun run src/entry.ts` (but make sure to install dependencies first!)
+the original bot ([@Campfire Flagship Event Bot](https://hackclub.enterprise.slack.com/team/U0A813A8X0F)) is still running, but it doesn't do much since campfire flagship has ended.
 
-You'll need an environment file to properly set up heidi and test her for yourself. You can DM me, @manitej on the Hack Club Slack, and I'd be happy to provide an env file for you to test with (and also help you set up and learn about heidi!)
+[@(dev) Campfire Flagship Event Bot](https://hackclub.enterprise.slack.com/team/U0ABHK3QC6S) is running in [#bot-testing-main](https://hackclub.enterprise.slack.com/archives/C0ABHFWCR2A) to show how it used to work! keep in mind that all slash commands for the dev bot have _-dev_ added onto the end and the channels are
+- [#campfire-flagship](https://hackclub.enterprise.slack.com/archives/C0A1GH3FY4T) -> [#bot-testing-main](https://hackclub.enterprise.slack.com/archives/C0ABHFWCR2A)
+- [#campfire-flagship-scraps](https://hackclub.enterprise.slack.com/archives/C0A82QMCQBZ) -> [#bot-testing-scraps](https://hackclub.enterprise.slack.com/archives/C0ABD61RD8B)
+- [#campfire-flagship-event-logs](https://hackclub.enterprise.slack.com/archives/C0A8CU5PY9K) -> [#bot-testing-logs](https://hackclub.enterprise.slack.com/archives/C0ABG58B3L5)
+but all text the bot says will reference the original commands and channels.
 
-## User Flow
-
-Heidi uses huddle join events provided by slack and polling to keep track of a user's huddle status. Since slack doesn't provide a convinent way to see if a user is in a huddle or not, there's possibilities where heidi might bug and not detect a user leaving a huddle (polling should have covered edge cases, but it seems like some people are facing issues/bugs still happening).
-
-pretty much the flow is:
-```
-user joins the huddle -> heidi sends a message to the user to send a scrap
-
-user sends a message
-    -> in the huddle and waiting for a scrap? create the scrap and start the session
-    -> in the huddle and in a session? add the scrap to the session
-
-user leaves the huddle -> heidi sends a message to the user to ship + pauses the session
-    -> user joins the huddle again? resume the session
-    -> user ships? end the session
-    -> user does nothing? end the session using last scrap as the ship
-
-there is also AFK checking and reminders - when a specific interval triggers, heidi will check if a user is AFK and remind them to ship. Once an hour passes (or whatever time is configured), heidi will remind the user to ship their session.
-```
+see the [original readme](https://github.com/techpixel/barista/tree/flow-v2) for a few more details on how the bot works!
